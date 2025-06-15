@@ -60,11 +60,8 @@ public class S3FileRepositoryBase : IFileRepository
         try
         {
             var response = await _s3.GetObjectAsync(BucketName, key);
-            var ms = new MemoryStream();
             string contentType = response.Headers.ContentType;
-            await response.ResponseStream.CopyToAsync(ms);
-            ms.Position = 0;
-            return (ms, contentType);
+            return (response.ResponseStream, contentType);
         }
         catch (AmazonS3Exception e) 
         {
