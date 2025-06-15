@@ -49,6 +49,6 @@ public class PutTest : Endpoint<PutTestRequest>
         test.Tags.Clear();
         test.Tags = tags;
         await RepositoryManager.SaveAsync();
-        await SendAsync(StatusCodes.Status204NoContent);
+        await SendNoContentAsync();
     }
 }

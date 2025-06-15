@@ -58,4 +58,3 @@ public class GetTestById : Endpoint<GetTestByIdRequest, GetTestByIdResponse>
         return res;
     }
 }
-//host=localhost;port=5432;dbname=oa-1;user=postgres;password=eko-2004
