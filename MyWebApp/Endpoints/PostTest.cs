@@ -12,6 +12,12 @@ public class PostTest : EndpointWithoutRequest<Guid>
     {
         Post("/api/test");
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Create a sample test";
+            s.Description = "Creates a test with placeholder data and returns its identifier.";
+            s.Response<Guid>(201, "Identifier of the new test");
+        });
     }
 
     public override async Task HandleAsync(CancellationToken ct)

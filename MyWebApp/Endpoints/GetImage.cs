@@ -14,6 +14,13 @@ public class GetImage : Endpoint<GetImageRequest>
     {
         Get("/api/image/{testId}/{imageName}");
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Download a test image";
+            s.Description = "Retrieves the specified image associated with a test.";
+            s.Response(200, "Image stream");
+            s.Response(404, "Image not found");
+        });
     }
 
     public override async Task HandleAsync(GetImageRequest req, CancellationToken ct)

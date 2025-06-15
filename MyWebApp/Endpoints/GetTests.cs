@@ -15,6 +15,13 @@ public class GetTests : EndpointWithoutRequest<GetTestsResponse>
     {
         Get("/api/test/list");
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Get all tests";
+            s.Description = "Returns a list with basic information about every test.";
+            s.Response<GetTestsResponse>(200, "List of tests");
+            s.Response(404, "No tests were found");
+        });
     }
 
     public override async Task HandleAsync(CancellationToken ct)

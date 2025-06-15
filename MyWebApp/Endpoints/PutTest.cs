@@ -14,6 +14,13 @@ public class PutTest : Endpoint<PutTestRequest>
     {
         Put("/api/test/{Id}");
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Update a test";
+            s.Description = "Updates an existing test with the provided data.";
+            s.Response(204, "Test updated successfully");
+            s.Response(404, "Test or tag not found");
+        });
     }
 
     public override async Task HandleAsync(PutTestRequest req, CancellationToken ct)
