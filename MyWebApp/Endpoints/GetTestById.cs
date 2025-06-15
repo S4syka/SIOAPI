@@ -16,6 +16,13 @@ public class GetTestById : Endpoint<GetTestByIdRequest, GetTestByIdResponse>
     {
         Get("/api/test/{Id}");
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Get a single test";
+            s.Description = "Returns detailed information about a test by its identifier.";
+            s.Response<GetTestByIdResponse>(200, "The requested test");
+            s.Response(404, "Test not found");
+        });
     }
 
     public override async Task HandleAsync(GetTestByIdRequest req, CancellationToken ct)

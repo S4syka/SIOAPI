@@ -16,6 +16,12 @@ public class PostImage : Endpoint<PostImageRequest>
         Post("/api/image/{testId}/{imageName}");
         AllowFileUploads();
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Upload a test image";
+            s.Description = "Uploads an image file for the specified test.";
+            s.Response(200, "Image uploaded successfully");
+        });
     }
 
     public override async Task HandleAsync(PostImageRequest req, CancellationToken ct)
