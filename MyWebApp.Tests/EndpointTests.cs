@@ -139,7 +139,7 @@ public class EndpointTests
     public async Task GetImage_Returns_File()
     {
         var repoManager = TestHelper.CreateRepositoryManager(out _);
-        var imgRepo = new TestImageMockRepository();
+        var imgRepo = TestHelper.CreateImageRepository();
         var id = Guid.NewGuid();
         await imgRepo.UploadImageAsync(id, "img.png", new MemoryStream(Encoding.UTF8.GetBytes("abc")), "text/plain");
 
@@ -160,7 +160,7 @@ public class EndpointTests
     public async Task GetImage_NotFound()
     {
         var repoManager = TestHelper.CreateRepositoryManager(out _);
-        var imgRepo = new TestImageMockRepository();
+        var imgRepo = TestHelper.CreateImageRepository();
         var ep = Factory.Create<GetImage>(c =>
         {
             c.AddTestServices(s =>
@@ -179,7 +179,7 @@ public class EndpointTests
     public async Task PostImage_Uploads_File()
     {
         var repoManager = TestHelper.CreateRepositoryManager(out _);
-        var imgRepo = new TestImageMockRepository();
+        var imgRepo = TestHelper.CreateImageRepository();
         var ep = Factory.Create<PostImage>(c =>
         {
             c.AddTestServices(s =>
