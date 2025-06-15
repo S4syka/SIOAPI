@@ -1,11 +1,14 @@
+using Contracts;
 using FastEndpoints;
 using Model.Models;
 using Repository;
+using Repository.S3;
 
 var bld = WebApplication.CreateBuilder(args);
 bld.Services.AddFastEndpoints();
-bld.Services.AddSingleton<OaDbContext>();
-bld.Services.AddSingleton<RepositoryManager>();
+bld.Services.AddScoped<OaDbContext>();
+bld.Services.AddScoped<RepositoryManager>();
+bld.Services.AddScoped<ITestImageRepository, TestImageMockRepository>();
 //bld.Services.AddSingleton<ILogger, MyWebApp.Logger>();
 
 var app = bld.Build();

@@ -4,7 +4,7 @@ namespace Repository.S3;
 
 public class S3FileRepositoryMockBase : IFileRepository
 {
-    Dictionary<string, (byte[] data, string contentType)> _files = new Dictionary<string, (byte[] data, string contentType)>();
+    static Dictionary<string, (byte[] data, string contentType)> _files = new Dictionary<string, (byte[] data, string contentType)>();
 
     public Task DeleteAsync(string key)
     {

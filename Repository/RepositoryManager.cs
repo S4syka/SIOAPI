@@ -19,13 +19,9 @@ public class RepositoryManager(OaDbContext repositoryContext, IConfiguration con
 
     private readonly Lazy<TagRepository> _tagRepository = new Lazy<TagRepository>(() => new TagRepository(repositoryContext));
 
-    private readonly Lazy<TestImageMockRepository> _testImageRepository = new Lazy<TestImageMockRepository>(() => new TestImageMockRepository());
-
     public TestRepository Test => _testRepository.Value;
 
     public TagRepository Tag => _tagRepository.Value;
-
-    public TestImageMockRepository TestImage => _testImageRepository.Value;
 
     public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
 }
