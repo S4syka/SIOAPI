@@ -2,12 +2,15 @@ using System.Text;
 using DataTransferObjects.Requests;
 using DataTransferObjects.Responses;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MyWebApp.Endpoints;
 using Repository.S3;
 using Repository;
 using Model.Models;
+using Contracts;
 
 namespace MyWebApp.Tests;
 
@@ -17,7 +20,10 @@ public class EndpointTests
     public async Task PostTest_Creates_Test()
     {
         var repo = TestHelper.CreateRepositoryManager(out var ctx);
-        var ep = new PostTest { RepositoryManager = repo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<PostTest>(ctx =>
+        {
+            ctx.AddTestServices(s => s.AddSingleton(repo));
+        });
 
         await ep.HandleAsync(default);
 
@@ -31,8 +37,10 @@ public class EndpointTests
         var repo = TestHelper.CreateRepositoryManager(out var ctx);
         ctx.Tests.Add(new Test { Name = "T", Tags = new List<Tag>() });
         await ctx.SaveChangesAsync();
-
-        var ep = new GetTests { RepositoryManager = repo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<GetTests>(ctxBuilder =>
+        {
+            ctxBuilder.AddTestServices(s => s.AddSingleton(repo));
+        });
 
         await ep.HandleAsync(default);
 
@@ -43,7 +51,10 @@ public class EndpointTests
     public async Task GetTests_NoData_Returns_NotFound()
     {
         var repo = TestHelper.CreateRepositoryManager(out _);
-        var ep = new GetTests { RepositoryManager = repo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<GetTests>(ctxBuilder =>
+        {
+            ctxBuilder.AddTestServices(s => s.AddSingleton(repo));
+        });
 
         await ep.HandleAsync(default);
 
@@ -58,7 +69,7 @@ public class EndpointTests
         ctx.Tests.Add(test);
         await ctx.SaveChangesAsync();
 
-        var ep = new GetTestById { RepositoryManager = repo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<GetTestById>(c => c.AddTestServices(s => s.AddSingleton(repo)));
 
         await ep.HandleAsync(new GetTestByIdRequest { Id = test.Id }, default);
 
@@ -69,7 +80,7 @@ public class EndpointTests
     public async Task GetTestById_NotFound()
     {
         var repo = TestHelper.CreateRepositoryManager(out _);
-        var ep = new GetTestById { RepositoryManager = repo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<GetTestById>(c => c.AddTestServices(s => s.AddSingleton(repo)));
 
         await ep.HandleAsync(new GetTestByIdRequest { Id = Guid.NewGuid() }, default);
 
@@ -86,7 +97,7 @@ public class EndpointTests
         ctx.Tests.Add(test);
         await ctx.SaveChangesAsync();
 
-        var ep = new PutTest { RepositoryManager = repo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<PutTest>(c => c.AddTestServices(s => s.AddSingleton(repo)));
         var req = new PutTestRequest
         {
             Id = test.Id,
@@ -109,7 +120,7 @@ public class EndpointTests
         ctx.Tests.Add(test);
         await ctx.SaveChangesAsync();
 
-        var ep = new PutTest { RepositoryManager = repo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<PutTest>(c => c.AddTestServices(s => s.AddSingleton(repo)));
         var req = new PutTestRequest
         {
             Id = test.Id,
@@ -132,7 +143,14 @@ public class EndpointTests
         var id = Guid.NewGuid();
         await imgRepo.UploadImageAsync(id, "img.png", new MemoryStream(Encoding.UTF8.GetBytes("abc")), "text/plain");
 
-        var ep = new GetImage { RepositoryManager = repoManager, TestImageRepo = imgRepo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<GetImage>(c =>
+        {
+            c.AddTestServices(s =>
+            {
+                s.AddSingleton(repoManager);
+                s.AddSingleton<ITestImageRepository>(imgRepo);
+            });
+        });
         await ep.HandleAsync(new GetImageRequest { TestId = id, ImageName = "img.png" }, default);
 
         Assert.Equal(StatusCodes.Status200OK, ep.HttpContext.Response.StatusCode);
@@ -143,7 +161,14 @@ public class EndpointTests
     {
         var repoManager = TestHelper.CreateRepositoryManager(out _);
         var imgRepo = new TestImageMockRepository();
-        var ep = new GetImage { RepositoryManager = repoManager, TestImageRepo = imgRepo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<GetImage>(c =>
+        {
+            c.AddTestServices(s =>
+            {
+                s.AddSingleton(repoManager);
+                s.AddSingleton<ITestImageRepository>(imgRepo);
+            });
+        });
 
         await ep.HandleAsync(new GetImageRequest { TestId = Guid.NewGuid(), ImageName = "none" }, default);
 
@@ -155,7 +180,14 @@ public class EndpointTests
     {
         var repoManager = TestHelper.CreateRepositoryManager(out _);
         var imgRepo = new TestImageMockRepository();
-        var ep = new PostImage { RepositoryManager = repoManager, TestImageRepo = imgRepo, HttpContext = new DefaultHttpContext() };
+        var ep = Factory.Create<PostImage>(c =>
+        {
+            c.AddTestServices(s =>
+            {
+                s.AddSingleton(repoManager);
+                s.AddSingleton<ITestImageRepository>(imgRepo);
+            });
+        });
         var id = Guid.NewGuid();
         var data = new MemoryStream(Encoding.UTF8.GetBytes("abc"));
         var formFile = new FormFile(data, 0, data.Length, "image", "img.png") { Headers = new HeaderDictionary(), ContentType = "text/plain" };

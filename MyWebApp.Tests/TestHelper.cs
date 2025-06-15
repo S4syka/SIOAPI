@@ -16,4 +16,5 @@ public static class TestHelper
         var configuration = new ConfigurationBuilder().Build();
         return new RepositoryManager(context, configuration);
     }
+
 }
