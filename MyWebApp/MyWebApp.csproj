@@ -8,10 +8,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="FastEndpoints.Swagger" Version="6.1.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
