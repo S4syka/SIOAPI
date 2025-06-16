@@ -19,20 +19,21 @@ public static class TestHelper
             .Options;
         context = new TestDbContext(options);
         var configuration = new ConfigurationBuilder().Build();
-        return new RepositoryManager(context, configuration);
+        return new RepositoryManager(context);
     }
 
     public static ITestImageRepository CreateImageRepository(bool useMock = true)
     {
-        if (useMock)
-        {
-            return new TestImageMockRepository();
-        }
+        return new TestImageMockRepository();
 
-        var configuration = new ConfigurationBuilder().Build();
-        var s3Client = new AmazonS3Client(new AnonymousAWSCredentials(), new AmazonS3Config());
-        var logger = Logger.GetLogger(typeof(TestImageRepository));
-        return new TestImageRepository(s3Client, configuration, logger);
+        //if (useMock)
+        //{
+            //return new TestImageMockRepository();
+        //}
+
+        //var configuration = new ConfigurationBuilder().Build();
+        //var s3Client = new AmazonS3Client(new AnonymousAWSCredentials(), new AmazonS3Config());
+        //ILogger logger = Logger.GetLogger(typeof(TestImageRepository));
+        //return new TestImageRepository(s3Client, configuration, logger);
     }
-
 }

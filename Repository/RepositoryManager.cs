@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Repository;
 
-public class RepositoryManager(OaDbContext repositoryContext, IConfiguration configuration)
+public class RepositoryManager(OaDbContext repositoryContext)
 {
     private readonly OaDbContext _repositoryContext = repositoryContext;
 

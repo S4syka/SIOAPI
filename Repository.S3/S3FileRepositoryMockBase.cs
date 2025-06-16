@@ -15,7 +15,7 @@ public class S3FileRepositoryMockBase : IFileRepository
         return Task.CompletedTask;
     }
 
-    public Task<(Stream? data, string contentType)> DownloadAsync(string key)
+    public Task<(Stream data, string contentType)> DownloadAsync(string key)
     {
         string contentType = string.Empty;
 
@@ -24,7 +24,7 @@ public class S3FileRepositoryMockBase : IFileRepository
             contentType = _files[key].contentType;
             return (Task.FromResult(((Stream) new MemoryStream(_files[key].data), contentType)));
         }
-        return Task.FromResult<(Stream? data, string contentType)>((null, contentType));
+        return Task.FromResult<(Stream data, string contentType)>((null, contentType));
     }
 
     public Task<IEnumerable<string>> ListKeysAsync(string? prefix = null)

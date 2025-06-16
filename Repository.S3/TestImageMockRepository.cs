@@ -16,7 +16,7 @@ public class TestImageMockRepository() : S3FileRepositoryMockBase, ITestImageRep
         {
             return await DownloadAsync(key);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             //_logger.Error(e, "S3 download failed for {Key}", key);
             return (null, string.Empty);
@@ -34,7 +34,7 @@ public class TestImageMockRepository() : S3FileRepositoryMockBase, ITestImageRep
         {
             await UploadAsync(key, data, contentType);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             //_logger.Error(e, "Failed to upload image to s3", testId, testName);
             throw;
