@@ -11,6 +11,8 @@ using Repository.S3;
 using Repository;
 using Model.Models;
 using Contracts;
+using Services.Test;
+using Services.Image;
 
 namespace MyWebApp.Tests;
 
@@ -22,7 +24,11 @@ public class EndpointTests
         var repo = TestHelper.CreateRepositoryManager(out var ctx);
         var ep = Factory.Create<PostTest>(ctx =>
         {
-            ctx.AddTestServices(s => s.AddSingleton(repo));
+            ctx.AddTestServices(s =>
+            {
+                s.AddSingleton(repo);
+                s.AddTransient<TestService>();
+            });
         });
 
         await ep.HandleAsync(default);
@@ -39,7 +45,11 @@ public class EndpointTests
         await ctx.SaveChangesAsync();
         var ep = Factory.Create<GetTests>(ctxBuilder =>
         {
-            ctxBuilder.AddTestServices(s => s.AddSingleton(repo));
+            ctxBuilder.AddTestServices(s =>
+            {
+                s.AddSingleton(repo);
+                s.AddTransient<TestService>();
+            });
         });
 
         await ep.HandleAsync(default);
@@ -53,7 +63,11 @@ public class EndpointTests
         var repo = TestHelper.CreateRepositoryManager(out _);
         var ep = Factory.Create<GetTests>(ctxBuilder =>
         {
-            ctxBuilder.AddTestServices(s => s.AddSingleton(repo));
+            ctxBuilder.AddTestServices(s =>
+            {
+                s.AddSingleton(repo);
+                s.AddTransient<TestService>();
+            });
         });
 
         await ep.HandleAsync(default);
@@ -69,7 +83,11 @@ public class EndpointTests
         ctx.Tests.Add(test);
         await ctx.SaveChangesAsync();
 
-        var ep = Factory.Create<GetTestById>(c => c.AddTestServices(s => s.AddSingleton(repo)));
+        var ep = Factory.Create<GetTestById>(c => c.AddTestServices(s =>
+        {
+            s.AddSingleton(repo);
+            s.AddTransient<TestService>();
+        }));
 
         await ep.HandleAsync(new GetTestByIdRequest { Id = test.Id }, default);
 
@@ -80,7 +98,11 @@ public class EndpointTests
     public async Task GetTestById_NotFound()
     {
         var repo = TestHelper.CreateRepositoryManager(out _);
-        var ep = Factory.Create<GetTestById>(c => c.AddTestServices(s => s.AddSingleton(repo)));
+        var ep = Factory.Create<GetTestById>(c => c.AddTestServices(s =>
+        {
+            s.AddSingleton(repo);
+            s.AddTransient<TestService>();
+        }));
 
         await ep.HandleAsync(new GetTestByIdRequest { Id = Guid.NewGuid() }, default);
 
@@ -97,7 +119,11 @@ public class EndpointTests
         ctx.Tests.Add(test);
         await ctx.SaveChangesAsync();
 
-        var ep = Factory.Create<PutTest>(c => c.AddTestServices(s => s.AddSingleton(repo)));
+        var ep = Factory.Create<PutTest>(c => c.AddTestServices(s =>
+        {
+            s.AddSingleton(repo);
+            s.AddTransient<TestService>();
+        }));
         var req = new PutTestRequest
         {
             Id = test.Id,
@@ -120,7 +146,11 @@ public class EndpointTests
         ctx.Tests.Add(test);
         await ctx.SaveChangesAsync();
 
-        var ep = Factory.Create<PutTest>(c => c.AddTestServices(s => s.AddSingleton(repo)));
+        var ep = Factory.Create<PutTest>(c => c.AddTestServices(s =>
+        {
+            s.AddSingleton(repo);
+            s.AddTransient<TestService>();
+        }));
         var req = new PutTestRequest
         {
             Id = test.Id,
@@ -149,6 +179,7 @@ public class EndpointTests
             {
                 s.AddSingleton(repoManager);
                 s.AddSingleton<ITestImageRepository>(imgRepo);
+                s.AddTransient<ImageService>();
             });
         });
         await ep.HandleAsync(new GetImageRequest { TestId = id, ImageName = "img.png" }, default);
@@ -167,6 +198,7 @@ public class EndpointTests
             {
                 s.AddSingleton(repoManager);
                 s.AddSingleton<ITestImageRepository>(imgRepo);
+                s.AddTransient<ImageService>();
             });
         });
 
@@ -186,6 +218,7 @@ public class EndpointTests
             {
                 s.AddSingleton(repoManager);
                 s.AddSingleton<ITestImageRepository>(imgRepo);
+                s.AddTransient<ImageService>();
             });
         });
         var id = Guid.NewGuid();

@@ -1,14 +1,12 @@
-﻿using Contracts;
 using DataTransferObjects.Requests;
 using FastEndpoints;
-using Repository;
+using Services.Image;
 
 namespace MyWebApp.Endpoints;
 
 public class GetImage : Endpoint<GetImageRequest>
 {
-    public required RepositoryManager RepositoryManager { get; set; }
-    public required ITestImageRepository TestImageRepo { get; set; }
+    public required ImageService ImageService { get; set; }
 
     public override void Configure()
     {
@@ -25,17 +23,17 @@ public class GetImage : Endpoint<GetImageRequest>
 
     public override async Task HandleAsync(GetImageRequest req, CancellationToken ct)
     {
-        var file = await TestImageRepo.DownloadTestImageAsync(req.TestId, req.ImageName)!;
+        var file = await ImageService.DownloadAsync(req.TestId, req.ImageName);
 
-        if(file.data is null)
+        if (file.data is null)
         {
             await SendNotFoundAsync();
             return;
         }
 
         await SendStreamAsync(
-                stream: file.data!,
-                fileLengthBytes: file.data!.Length,
-                contentType: file.contentType);
+            stream: file.data,
+            fileLengthBytes: file.data.Length,
+            contentType: file.contentType);
     }
 }

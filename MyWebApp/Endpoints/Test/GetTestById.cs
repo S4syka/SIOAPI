@@ -2,15 +2,14 @@
 using DataTransferObjects;
 using DataTransferObjects.Responses;
 using DataTransferObjects.Requests;
-using Repository;
-using Microsoft.EntityFrameworkCore;
+using Services.Test;
 using Model.Models;
 
 namespace MyWebApp.Endpoints;
 
 public class GetTestById : Endpoint<GetTestByIdRequest, GetTestByIdResponse>
 {
-    public required RepositoryManager RepositoryManager { get; set; }
+    public required TestService TestService { get; set; }
 
     public override void Configure()
     {
@@ -27,7 +26,7 @@ public class GetTestById : Endpoint<GetTestByIdRequest, GetTestByIdResponse>
 
     public override async Task HandleAsync(GetTestByIdRequest req, CancellationToken ct)
     {
-        Test? test =  RepositoryManager.Test.FindAll(false).Include(t => t.Tags).Where(x => x.Id == req.Id).SingleOrDefault();
+        var test = TestService.GetTestById(req.Id);
 
         if(test == null)
         {
