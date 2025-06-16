@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using Repository;
+using Services.Test;
 using DataTransferObjects.Requests;
 using DataTransferObjects.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ namespace MyWebApp.Endpoints;
 
 public class GetTests : EndpointWithoutRequest<GetTestsResponse>
 {
-    public required RepositoryManager RepositoryManager { get; set; }
+    public required TestService TestService { get; set; }
 
     public override void Configure()
     {
@@ -26,9 +26,7 @@ public class GetTests : EndpointWithoutRequest<GetTestsResponse>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var tests = await RepositoryManager.Test.FindAll(false)
-            .Include(t => t.Tags)
-            .ToListAsync(ct);
+        var tests = (await TestService.GetAllTestsAsync(ct)).ToList();
 
         if(tests == null || tests.Count == 0)
         {

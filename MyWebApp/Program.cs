@@ -4,6 +4,8 @@ using FastEndpoints.Swagger;
 using Model.Models;
 using Repository;
 using Repository.S3;
+using Services.Test;
+using Services.Image;
 
 var bld = WebApplication.CreateBuilder(args);
 bld.Services.AddFastEndpoints();
@@ -12,6 +14,8 @@ bld.Services.AddSwaggerDocument();
 bld.Services.AddScoped<OaDbContext>();
 bld.Services.AddScoped<RepositoryManager>();
 bld.Services.AddScoped<ITestImageRepository, TestImageRepository>();
+bld.Services.AddScoped<TestService>();
+bld.Services.AddScoped<ImageService>();
 //bld.Services.AddSingleton<ILogger, MyWebApp.Logger>();
 
 var app = bld.Build();
