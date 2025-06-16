@@ -11,9 +11,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DataTransferObjects\DataTransferObjects.csproj" />
-		<ProjectReference Include="..\Model\Model.csproj" />
-		<ProjectReference Include="..\Repository\Repository.csproj" />
-	</ItemGroup>
+                <ProjectReference Include="..\DataTransferObjects\DataTransferObjects.csproj" />
+                <ProjectReference Include="..\Model\Model.csproj" />
+                <ProjectReference Include="..\Repository\Repository.csproj" />
+                <ProjectReference Include="..\Services\Services.csproj" />
+        </ItemGroup>
 
 </Project>

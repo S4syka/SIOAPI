@@ -1,15 +1,12 @@
-﻿using Contracts;
 using DataTransferObjects.Requests;
 using FastEndpoints;
-using Repository;
+using Services.Image;
 
 namespace MyWebApp.Endpoints;
 
 public class PostImage : Endpoint<PostImageRequest>
 {
-    public required RepositoryManager RepositoryManager { get; set; }
-    public required ITestImageRepository TestImageRepo { get; set; }
-
+    public required ImageService ImageService { get; set; }
 
     public override void Configure()
     {
@@ -26,8 +23,7 @@ public class PostImage : Endpoint<PostImageRequest>
 
     public override async Task HandleAsync(PostImageRequest req, CancellationToken ct)
     {
-        await TestImageRepo.UploadImageAsync(req.TestId, req.ImageName, req.Image.OpenReadStream(), req.Image.ContentType);
+        await ImageService.UploadAsync(req.TestId, req.ImageName, req.Image.OpenReadStream(), req.Image.ContentType);
         await SendOkAsync();
-        return;
     }
 }

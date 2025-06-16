@@ -1,14 +1,13 @@
 ﻿using DataTransferObjects.Requests;
 using FastEndpoints;
-using Microsoft.EntityFrameworkCore;
+using Services.Test;
 using Model.Models;
-using Repository;
 
 namespace MyWebApp.Endpoints;
 
 public class PutTest : Endpoint<PutTestRequest>
 {
-    public required RepositoryManager RepositoryManager { get; set; }
+    public required TestService TestService { get; set; }
 
     public override void Configure()
     {
@@ -25,37 +24,20 @@ public class PutTest : Endpoint<PutTestRequest>
 
     public override async Task HandleAsync(PutTestRequest req, CancellationToken ct)
     {
-        Test? test = await RepositoryManager
-            .Test.FindByCondition(t => t.Id.Equals(req.Id), true)
-            .Include(t => t.Tags)
-            .SingleOrDefaultAsync(ct);
+        var result = await TestService.UpdateTestAsync(req, ct);
 
-        if (test == null)
+        if(result == TestService.UpdateResult.TestNotFound)
         {
             await SendNotFoundAsync();
             return;
         }
 
-        List<Tag> tags = new List<Tag>();
-
-        foreach (var tag in req.Tags)
+        if(result == TestService.UpdateResult.TagNotFound)
         {
-            Tag? existingTag = await RepositoryManager.Tag.GetTagAsync(tag.TagName, tag.CategoryName, true);
-            if(existingTag is null)
-            {
-                await SendAsync("Tag not found", statusCode: 404);
-                return;
-            }
-
-            tags.Add(existingTag);
+            await SendAsync("Tag not found", statusCode: 404);
+            return;
         }
 
-        test.Name = req.Name;
-        test.Description = req.Description;
-        test.Content = req.Content;
-        test.Tags.Clear();
-        test.Tags = tags;
-        await RepositoryManager.SaveAsync();
         await SendNoContentAsync();
     }
 }
