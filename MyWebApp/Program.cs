@@ -13,7 +13,7 @@ bld.Services.AddFastEndpoints();
 bld.Services.AddSwaggerDocument();
 bld.Services.AddScoped<OaDbContext>();
 bld.Services.AddScoped<RepositoryManager>();
-bld.Services.AddScoped<ITestImageRepository, TestImageRepository>();
+bld.Services.AddScoped<ITestImageRepository, TestImageMockRepository>();
 bld.Services.AddScoped<TestService>();
 bld.Services.AddScoped<ImageService>();
 //bld.Services.AddSingleton<ILogger, MyWebApp.Logger>();
