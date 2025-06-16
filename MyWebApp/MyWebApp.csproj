@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+
 	<ItemGroup>
 		<PackageReference Include="FastEndpoints.Swagger" Version="6.1.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">

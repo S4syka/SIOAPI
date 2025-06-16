@@ -12,6 +12,8 @@
     <ProjectReference Include="..\Repository\Repository.csproj" />
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\Repository.S3\Repository.S3.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
   </ItemGroup>
 
 </Project>
