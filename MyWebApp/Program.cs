@@ -10,7 +10,7 @@ bld.Services.AddEndpointsApiExplorer();
 bld.Services.AddSwaggerGen();
 bld.Services.AddScoped<OaDbContext>();
 bld.Services.AddScoped<RepositoryManager>();
-bld.Services.AddScoped<ITestImageRepository, TestImageMockRepository>();
+bld.Services.AddTestImageRepository(bld.Configuration);
 //bld.Services.AddSingleton<ILogger, MyWebApp.Logger>();
 
 var app = bld.Build();
