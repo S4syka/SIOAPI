@@ -13,6 +13,8 @@ using Model.Models;
 using Contracts;
 using Services.Test;
 using Services.Image;
+using Services.Category;
+using Microsoft.AspNetCore.Routing;
 
 namespace MyWebApp.Tests;
 
@@ -231,5 +233,44 @@ public class EndpointTests
         var downloaded = await imgRepo.DownloadTestImageAsync(id, "img.png");
         Assert.NotNull(downloaded.data);
         Assert.Equal(StatusCodes.Status200OK, ep.HttpContext.Response.StatusCode);
+    }
+    [Fact]
+    public async Task PostCategory_Creates_Category()
+    {
+        var repo = TestHelper.CreateRepositoryManager(out var ctx);
+        var ep = Factory.Create<PostCategory>(ctx =>
+        {
+            ctx.AddTestServices(s =>
+            {
+                s.AddSingleton(repo);
+                s.AddTransient<CategoryService>();
+            });
+        });
+
+        await ep.HandleAsync(new CategoryRequest { Name = "math" }, default);
+
+        Assert.Single(ctx.Categories);
+        Assert.Equal(StatusCodes.Status201Created, ep.HttpContext.Response.StatusCode);
+    }
+
+    [Fact]
+    public async Task PostTag_Creates_Tag()
+    {
+        var repo = TestHelper.CreateRepositoryManager(out var ctx);
+        ctx.Categories.Add(new Category { Name = "math" });
+        await ctx.SaveChangesAsync();
+        var ep = Factory.Create<PostTag>(c =>
+        {
+            c.AddTestServices(s =>
+            {
+                s.AddSingleton(repo);
+                s.AddTransient<CategoryService>();
+            });
+        });
+
+        await ep.HandleAsync(new TagRequest { CategoryName = "math", Name = "algebra" }, default);
+
+        Assert.Single(ctx.Tags);
+        Assert.Equal(StatusCodes.Status201Created, ep.HttpContext.Response.StatusCode);
     }
 }
